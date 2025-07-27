@@ -11,8 +11,13 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         read_only_fields = ['author', 'created_at']
 
     def validate(self, attrs):
-        if self.instance and self.instance.author != self.context['request'].user and not self.context['request'].user.is_staff:
-            raise serializers.ValidationError("Вы можете редактировать только свои объявления")
+        if self.instance:  # Проверка только при обновлении существующего объявления
+            request = self.context.get('request')
+            if request and request.user:
+                if not (self.instance.author == request.user or
+                        request.user.is_staff or
+                        request.user.role == 'ADMIN'):
+                    raise serializers.ValidationError("Вы можете редактировать только свои объявления")
         return attrs
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -29,6 +34,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def validate(self, attrs):
-        if self.instance and self.instance.author != self.context['request'].user and not self.context['request'].user.is_staff:
-            raise serializers.ValidationError("Вы можете редактировать только свои отзывы")
+        if self.instance:  # Проверка только при обновлении существующего отзыва
+            request = self.context.get('request')
+            if request and request.user:
+                # Аналогичная проверка прав как для объявлений
+                if not (self.instance.author == request.user or
+                        request.user.is_staff or
+                        request.user.role == 'ADMIN'):
+                    raise serializers.ValidationError("Вы можете редактировать только свои отзывы")
         return attrs

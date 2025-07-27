@@ -130,6 +130,13 @@ class TestAdvertisementAPI:
         response = api_client.patch(url, data)
         assert response.status_code == status.HTTP_200_OK
 
+    def test_admin_can_delete_any_ad(self, api_client, admin_user, advertisement):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse('advertisement-detail', args=[advertisement.id])
+        response = api_client.delete(url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert not Advertisement.objects.filter(id=advertisement.id).exists()
+
 # Тесты API отзывов
 class TestReviewAPI:
     def test_anonymous_can_view_reviews(self, api_client, advertisement, review):
@@ -159,6 +166,21 @@ class TestReviewAPI:
         data = {'text': 'Updated review'}
         response = api_client.patch(url, data)
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_admin_can_edit_any_review(self, api_client, admin_user, advertisement, review):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse('review-detail', args=[advertisement.id, review.id])
+        data = {'text': 'Admin edited review'}
+        response = api_client.patch(url, data)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['text'] == 'Admin edited review'
+
+    def test_admin_can_delete_any_review(self, api_client, admin_user, advertisement, review):
+        api_client.force_authenticate(user=admin_user)
+        url = reverse('review-detail', args=[advertisement.id, review.id])
+        response = api_client.delete(url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert not Review.objects.filter(id=review.id).exists()
 
 # Тесты фильтрации и пагинации
 class TestAdvertisementFilters:
