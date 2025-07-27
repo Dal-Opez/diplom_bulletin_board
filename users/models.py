@@ -75,7 +75,6 @@ class User(AbstractUser):
         if self.pk and 'role' in kwargs.get('update_fields', []) or 'role' in self.get_dirty_fields():
             original_user = User.objects.get(pk=self.pk)
             if original_user.role != self.role:
-                # Проверяем, есть ли доступ у запрашивающего пользователя
                 request = kwargs.pop('request', None)
                 if not request or not request.user.is_superuser:
                     raise PermissionDenied("Только администратор может изменять роль")

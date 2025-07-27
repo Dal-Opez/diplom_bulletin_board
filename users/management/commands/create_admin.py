@@ -14,12 +14,12 @@ class Command(BaseCommand):
         #     #user.role = ADMIN
         #     user.save()
         #     self.stdout.write(self.style.SUCCESS('Суперпользователь создан!'))
-        if not User.objects.filter(email="admin@sky.pro").exists():
+        if not User.objects.filter(email="admin111@sky.pro").exists():
             try:
                 user = User(
-                    email="admin@sky.pro",
-                    is_superuser=True,
-                    is_staff=True,
+                    email="admin111@sky.pro",
+                    is_superuser=False,
+                    is_staff=False,
                     is_active=True,
                     first_name="Admin",
                     last_name="User",
@@ -28,8 +28,8 @@ class Command(BaseCommand):
                 )
                 user.set_password("123qwe")
                 user.save(force_insert=True)
-                self.stdout.write(self.style.SUCCESS('Суперпользователь создан!'))
+                self.stdout.write(self.style.SUCCESS('Администратор создан!'))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'Ошибка: {str(e)}'))
         else:
-            self.stdout.write(self.style.WARNING('Суперпользователь уже существует!'))
+            self.stdout.write(self.style.WARNING('Администратор уже существует!'))
