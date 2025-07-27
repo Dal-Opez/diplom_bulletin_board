@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -44,6 +45,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_yasg',
+    # 'users',
+    'users.apps.UsersConfig',
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +147,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ]
 
 CORS_ALLOW_ALL_ORIGINS = False
+
+AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+if 'yandex' in EMAIL_HOST.lower():
+    EMAIL_USE_SSL = True
+    EMAIL_USE_TLS = False
+# EMAIL_USE_TLS = True if os.getenv("EMAIL_USE_TLS") == "True" else False
+# EMAIL_USE_SSL = True if os.getenv("EMAIL_USE_SSL") == "True" else False
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+FRONTEND_URL = 'http://localhost:3000'
+
