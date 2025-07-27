@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from advertisements.models import Advertisement
 from users.models import USER, ADMIN
+from advertisements.models import Review
 
 User = get_user_model()
 
@@ -11,6 +12,7 @@ User = get_user_model()
 def api_client():
     """Фикстура для API клиента"""
     from rest_framework.test import APIClient
+
     return APIClient()
 
 
@@ -23,7 +25,7 @@ def regular_user():
         last_name="User",
         phone="+1234567890",
         role=USER,
-        is_active=True
+        is_active=True,
     )
     user.password = make_password("testpass123")
     user.save()
@@ -47,7 +49,7 @@ def admin_user():
         role=ADMIN,
         is_staff=True,
         is_superuser=True,
-        is_active=True
+        is_active=True,
     )
     user.password = make_password("adminpass123")
     user.save()
@@ -70,7 +72,7 @@ def second_user():
         last_name="User2",
         phone="+1234567891",
         role=USER,
-        is_active=True
+        is_active=True,
     )
     user.password = make_password("testpass123")
     user.save()
@@ -85,10 +87,7 @@ def second_user():
 def advertisement(regular_user):
     """Фикстура для создания тестового объявления"""
     ad = Advertisement.objects.create(
-        title='Test Ad',
-        price=1000,
-        description='Test description',
-        author=regular_user
+        title="Test Ad", price=1000, description="Test description", author=regular_user
     )
     assert ad.pk is not None
     return ad
@@ -98,9 +97,7 @@ def advertisement(regular_user):
 def review(regular_user, advertisement):
     """Фикстура для создания тестового отзыва"""
     rev = Review.objects.create(
-        text='Great product!',
-        author=regular_user,
-        advertisement=advertisement
+        text="Great product!", author=regular_user, advertisement=advertisement
     )
     assert rev.pk is not None
     return rev

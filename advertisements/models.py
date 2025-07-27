@@ -1,10 +1,17 @@
 from django.db import models
 from users.models import User
 
+
 class Advertisement(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Заголовок объявления", help_text="Введите заголовок объявления")
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Заголовок объявления",
+        help_text="Введите заголовок объявления",
+    )
     price = models.PositiveIntegerField(verbose_name="Цена", help_text="Укажите цену")
-    description = models.TextField(blank=True, null=True, verbose_name="Описание", help_text="Введите описание")
+    description = models.TextField(
+        blank=True, null=True, verbose_name="Описание", help_text="Введите описание"
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

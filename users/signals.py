@@ -15,18 +15,20 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
 
     # Отправка письма
     context = {
-        'current_user': reset_password_token.user,
-        'token': reset_password_token.key
+        "current_user": reset_password_token.user,
+        "token": reset_password_token.key,
     }
 
-    email_html_message = render_to_string('users/email/password_reset_email.html', context)
+    email_html_message = render_to_string(
+        "users/email/password_reset_email.html", context
+    )
     email_plaintext_message = f"Ваш токен для сброса пароля: {reset_password_token.key}"
 
     msg = EmailMultiAlternatives(
         subject="Сброс пароля",
         body=email_plaintext_message,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[reset_password_token.user.email]
+        to=[reset_password_token.user.email],
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
