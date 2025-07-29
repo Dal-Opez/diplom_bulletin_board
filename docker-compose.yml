@@ -10,12 +10,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${USER} -d ${NAME}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
   web:
+    ports:
+      - "8000:8000"  # <-- Добавьте эту строку
     build: .
     env_file:
       - .env
