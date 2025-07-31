@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import CharFilter, FilterSet
 from .models import Advertisement, Review
+from .pagination import AdvertisementPaginator
 from .serializers import AdvertisementSerializer, ReviewSerializer
 from .permissions import IsOwnerOrAdmin
 
@@ -20,6 +21,7 @@ class AdvertisementListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = AdvertisementFilter
+    pagination_class = AdvertisementPaginator
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -53,4 +55,4 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrAdmin,
-    ]  # Обновляем
+    ]
